@@ -1,0 +1,4 @@
+#include "../common.h"
+DEFINE_OP(bsy55) {
+	NEXT_OP(sp, a, x, y >> 55, o);
+}

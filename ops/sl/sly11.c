@@ -1,0 +1,4 @@
+#include "../common.h"
+DEFINE_OP(sly11) {
+	NEXT_OP(sp, a, x, y << 11, o);
+}

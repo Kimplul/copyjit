@@ -1,0 +1,4 @@
+#include "../common.h"
+DEFINE_OP(li68) {
+	UNUSED(o); NEXT_OP(sp, a, x, y, 68);
+}

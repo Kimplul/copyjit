@@ -1,0 +1,30 @@
+#!/bin/sh
+
+echo "#ifndef COPYJIT_OPS_H" > ops.h
+echo "#define COPYJIT_OPS_H" >> ops.h
+
+echo "#ifndef COPYJIT_DECLS_H" > decls.h
+echo "#define COPYJIT_DECLS_H" >> decls.h
+
+echo "#ifndef COPYJIT_DEFNS_H" > defns.h
+echo "#define COPYJIT_DEFNS_H" >> defns.h
+
+for bin in ${1}
+do
+	base=$(basename "${bin}")
+	op=${base%.*}
+	cp "../${bin}" "gen/${op}"
+	xxd -i "gen/${op}" >> ops.h
+	echo "void *compile_${op}(ctx_t *ctx);" >> decls.h
+	echo "void *compile_${op}(ctx_t *ctx)\n"			\
+		"{\n"							\
+		"	void *pc = ctx->pc;\n"				\
+		"	memcpy(pc, gen_${op}, gen_${op}_len);\n"	\
+		"	ctx->pc += gen_${op}_len;\n"			\
+		"	return pc;\n"					\
+		"}" >> defns.h
+done
+
+echo "#endif /* COPYJIT_OPS_H */" >> ops.h
+echo "#endif /* COPYJIT_DECLS_H */" >> decls.h
+echo "#endif /* COPYJIT_DEFNS_H */" >> defns.h

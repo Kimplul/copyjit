@@ -1,0 +1,35 @@
+#!/bin/sh
+
+gencommon () {
+	lint="build/${s%.*}${1}.l"
+	dep="build/${s%.*}${1}.d"
+	obj="build/${s%.*}${1}"
+
+	echo "${dep}:"		>> deps.mk
+	echo "include ${dep}"	>> deps.mk
+	echo "${obj}: ${s}"	>> deps.mk
+}
+
+genobjs () {
+	gencommon ".o"
+	echo "${obj}: ${s}"	>> deps.mk
+	echo "	\$(COMPILE) -c \$< -o \$@" >> deps.mk
+
+	echo "${lint}: ${s}" >> deps.mk
+	echo "	\$(LINT) -c ${s} -o /dev/null" >> deps.mk
+}
+
+case "${1}" in
+	--sources)
+		func=genobjs
+		;;
+esac
+
+# create all subdirectories
+mkdir -p $(echo "${2}" | xargs dirname | uniq | sed 's|^|build/|g')
+
+for s in ${2}
+do
+	${func} ${suffix}
+	echo ${obj}
+done

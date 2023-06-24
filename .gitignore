@@ -1,0 +1,11 @@
+deps.mk
+docs/output
+lib/gen/*
+lib/empty.bin
+lib/empty.o
+lib/prune
+lib/*.d
+build
+copyjit
+!include/copyjit
+!lib/gen/.gitkeep

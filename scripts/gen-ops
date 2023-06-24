@@ -1,0 +1,20 @@
+#!/bin/sh
+
+genobjs () {
+	obj="build/${s%.*}.o"
+	bin="build/${s%.*}.bin"
+	echo "${obj}: ${s}" 				>> deps.mk
+	echo "	\$(OP_COMPILE) -c \$< -o \$@"		>> deps.mk
+	echo "${bin}: lib/prune"			>> deps.mk
+	echo "${bin}: ${obj}"				>> deps.mk
+	echo "	\$(OBJCOPY) -j .text -Obinary \$< \$@"	>> deps.mk
+	echo "	./lib/prune lib/empty.bin ${bin}"	>> deps.mk
+	echo "${bin}"
+}
+
+mkdir -p $(echo "${1}" | xargs dirname | uniq | sed 's|^|build/|g')
+
+for s in ${1}
+do
+	genobjs
+done

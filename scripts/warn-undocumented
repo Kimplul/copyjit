@@ -1,0 +1,6 @@
+#!/bin/sh
+# look through all files for either @file or \file, grep -c will report
+# ./example.file:0 if it is not found.
+find src -iname '*.[ch]' -exec \
+	grep -c '[@\]file' {} \+ \
+	| awk -F':' '$2 == 0 {print "Undocumented file:", $1}'
