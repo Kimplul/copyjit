@@ -8,10 +8,10 @@ we can then copy in place. This relies heavily on continuation passing, meaning
 that all operations defined by the jit library have to allow for continuation
 passing optimizations to happen. In copy-and-patch, the templates are filled in
 at runtime with whatever values the user chooses, but since this relies on
-parsin ELF relocations, the library will have to be implemented for different
+parsin ELF relocations, the library will have to be ported to different
 platforms. Not a huge issue, but if we could avoid runtime patching of
-relocations we could (in theory) build a jit library that's equally portable
-as whatever compiler is used to compile it while having very low latencies.
+relocations we could (in theory) build a jit library that's architecture agnostic,
+while having very low latencies.
 
 ## Building
 
