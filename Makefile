@@ -27,7 +27,7 @@ COMPILE		= $(CROSS_COMPILE)$(CC) $(DEBUGFLAGS)\
 		  $(CFLAGS) $(DEPFLAGS) $(COMPILEFLAGS) $(INCLUDEFLAGS)
 
 OP_COMPILE	= $(CROSS_COMPILE)$(CC) \
-			-Wall -Wextra -O3 \
+			-Wall -Wextra -O2 \
 			-fno-schedule-insns -fno-schedule-insns2
 
 LINT		= $(COMPILE) $(LINTFLAGS)
