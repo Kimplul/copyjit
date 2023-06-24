@@ -1,6 +1,6 @@
 # copyjit
 
-Inspired by [copy-and-path](http://fredrikbk.com/publications/copy-and-patch.pdf),
+Inspired by [copy-and-patch](http://fredrikbk.com/publications/copy-and-patch.pdf),
 but what if we didn't have to patch anything?
 
 The basic idea is that we use the compiler to generate 'templates' for us, that
@@ -71,7 +71,7 @@ I suspect immedate generation is a bottleneck at the moment. Since we can only
 generate 'pure' functions, we can't pass them any data beyond register
 arguments. This means that we have to generate one operation for each immediate
 value we want to be able to load, which bloats up the library quite a bit and
-(likely) maked loading large immedate values to registers slow.
+(likely) makes loading large immedate values to registers slow.
 However, I suspect it might be possible to 'allocate' some extra
 bytes in the `.text` sections that the operation could refer to, and whose
 address is known so that the jit compiler could populate the area with some
@@ -86,6 +86,6 @@ architecture agnostically. In pseudo-assembly form, something like:
 5: next_operation
 ```
 
-This however isn't implemented at the moment. Also, not all operations should
+This, however, isn't implemented at the moment. Also, not all operations should
 reserve data as extra jumps are most likely pretty costly, and data should be
 reserved to instructions that load immediate values and the like.
