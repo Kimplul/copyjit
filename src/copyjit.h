@@ -1,3 +1,5 @@
+/* SPDX-License-Identifier: copyleft-next-0.3.1 */
+
 #ifndef HMMJIT_H
 #define HMMJIT_H
 

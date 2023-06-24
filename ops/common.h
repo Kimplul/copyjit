@@ -1,3 +1,5 @@
+/* SPDX-License-Identifier: copyleft-next-0.3.1 */
+
 #ifndef OPS_COMMON_H
 #define OPS_COMMON_H
 

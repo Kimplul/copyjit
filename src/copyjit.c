@@ -1,3 +1,5 @@
+/* SPDX-License-Identifier: copyleft-next-0.3.1 */
+
 #include <string.h>
 #include <stdint.h>
 #include <stdlib.h>

@@ -1,11 +1,16 @@
 #!/bin/sh
 
-SPDX="/* SPDX-License-Identifier: GPL-3.0-or-later */"
+SPDX="/* SPDX-License-Identifier: copyleft-next-0.3.1 */"
 
 for f in "$@"
 do
 	if [ "$(head -1 "$f")" != "${SPDX}" ]
 	then
 		sed -i "1i${SPDX}\n" "$f"
+	fi
+
+	if ! grep 'Copyright' "$f" > /dev/null
+	then
+		echo "Missing copyright info in $f"
 	fi
 done

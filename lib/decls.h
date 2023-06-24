@@ -1,3 +1,5 @@
+/* SPDX-License-Identifier: copyleft-next-0.3.1 */
+
 #ifndef COPYJIT_DECLS_H
 #define COPYJIT_DECLS_H
 void *compile_add(ctx_t *ctx);

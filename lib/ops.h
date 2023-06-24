@@ -1,3 +1,5 @@
+/* SPDX-License-Identifier: copyleft-next-0.3.1 */
+
 #ifndef COPYJIT_OPS_H
 #define COPYJIT_OPS_H
 unsigned char gen_add[] = {
