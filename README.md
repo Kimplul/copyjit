@@ -18,7 +18,7 @@ while having very low latencies.
 + `make`
 
 This will produce a simple test program, `copyjit`, which just generates a
-procedure that sums the first billion digits.
+procedure that sums the first billion numbers.
 
 ## Idea
 
@@ -101,7 +101,7 @@ the method seems to be more reliable than the first attempt.
 
 ## Possible future improvements
 
-I suspect immedate generation is a bottleneck at the moment. Since we can only
+I suspect immedate generation is a bottleneck at the moment. Since we only
 generate 'pure' functions, we can't pass them any data beyond register
 arguments. This means that we have to generate one operation for each immediate
 value we want to be able to load, which bloats up the library quite a bit and
@@ -126,4 +126,5 @@ reserved to instructions that load immediate values and the like.
 
 I suspect it would be reasonably easy to use two linker scripts, one for operations
 that shouldn't take immedates and one for operations that should, with the difference
-just being that one directly falls through and another jumps and references data.
+just being that one directly falls through and another jumps over some data appended to
+it at runime.
