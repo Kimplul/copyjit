@@ -47,12 +47,13 @@ task, it's just the first one that popped into my mind.
 
 ## Implementation (or, hacks)
 
-Compilers probably weren't quite designed for this, so we rely on some pretty
-hacky things.
+Since we would optimally like to just copy pre-generated binary code one block
+after another, each operation should jump to the address following the last
+instruction in the operation. However, due to continuation passing, this jump
+is usually the last step in an operation, so we would like to filter it out
+whenever possible to in crease execution speed and minimize binary size.
 
-Currently this implementation takes the address of a label as the
-continuation function, which allows us to filter out the continuation jumps and
-gives us a pretty major speed boost. Essentially, we generate an empty operation
+Essentially, we generate an empty operation `lib/empty`
 that just falls through to another operation, and then we can compare this empty
 operation to other operations. If we find a procedure epilogue that matches the
 empty operation, we can (fairly safely?) filter the epilogue out, saving on code
@@ -61,11 +62,44 @@ size and increasing runtime performance. GCC's `-fno-schedule-insns` and
 instructions mixed in, increasing the chances of succesful filtration.
 The code should still work without the filtration, but is a bit slower.
 
+Implementing this filtering is arguably the most hacky part of the project.
+
+### First implementation attempt
+
+The first implementation took the address of a label as the
+continuation function to produce a jump that technically lands within the procedure
+itself, with the effect of just falling directly through. Essentially:
+
+```
+void some_operation(int arg0, int arg2)
+{
+	do_work(arg0, arg2);
+	((op_call)(&&_next_op))(arg0, arg2);
+	_next_op:
+}
+```
+
+This requires a GCC extension as taking the address of a label is not part of standard C.
+
 Using a label as a continuation point seems to have uncovered some bugs in the
 GNU assembler, as the compiler itself generates seemingly 'correct' assembly
-but the final binaries are incorrect. Currently x86 works with the GNU toolchain,
+but the final binaries are incorrect. This method works on x86 with the GNU toolchain,
 with at least RISC-V and ARM showing the previously mentioned issues. LLVM seems to work
 on RISC-V and x86, but fails on ARM. I haven't tested other systems yet.
+
+### Second implementation attempt
+
+Instead of relying on labels, we try to use a custom linker script that places a symbol
+directly after the procedure. This is the current implementation and seems to work on x86
+and RISCV without modifications. AARCH64 does work, though unfortunately I had to add
+AARCH64 specific compilation options to force the tiny memory model.
+Not a huge issue, but considering the dream is
+to have a completely architecture agnostic jit library, this sort of goes against that.
+
+Still haven't tested other architectures. While somewhat hacky,
+the method seems to be more reliable than the first attempt.
+
+## Possible future improvements
 
 I suspect immedate generation is a bottleneck at the moment. Since we can only
 generate 'pure' functions, we can't pass them any data beyond register
@@ -89,3 +123,7 @@ architecture agnostically. In pseudo-assembly form, something like:
 This, however, isn't implemented at the moment. Also, not all operations should
 reserve data as extra jumps are most likely pretty costly, and data should be
 reserved to instructions that load immediate values and the like.
+
+I suspect it would be reasonably easy to use two linker scripts, one for operations
+that shouldn't take immedates and one for operations that should, with the difference
+just being that one directly falls through and another jumps and references data.

@@ -9,18 +9,20 @@ typedef signed long sreg_t;
 typedef void (*op_call)(reg_t *sp, reg_t a, reg_t x, reg_t y, reg_t o);
 
 #define NEXT_OP(sp, a, x, y, o) \
-	((op_call)(&&_next_op))((sp), (a), (x), (y), (o)); _next_op: (void)1;
+	((op_call)(&__next_op))((sp), (a), (x), (y), (o));
 
 #define JUMP(target, sp, a, x, y, o) \
 	((op_call)(target))((sp), (a), (x), (y), (o));
 
 #define BRANCH(target, cond, sp, a, x, y, o)                        \
-	((op_call)((cond) ? (void *)(target) : (void *)&&_next_op)) \
+	((op_call)((cond) ? (void *)(target) : (void *)&__next_op)) \
 	((sp), (a), (x), (y), (o));                                 \
-_next_op: (void)1;
 
-#define DEFINE_OP(name) void name(reg_t *sp, reg_t a, reg_t x, reg_t y, reg_t o)
+#define DEFINE_OP(name) void _op(reg_t *sp, reg_t a, reg_t x, reg_t y, reg_t o)
 
 #define UNUSED(x) (void)(x);
+
+#define __hidden __attribute__((visibility("hidden")))
+__hidden extern void *__next_op;
 
 #endif /* OPS_COMMON_H */

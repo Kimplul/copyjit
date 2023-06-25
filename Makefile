@@ -26,9 +26,20 @@ include src/source.mk
 COMPILE		= $(CROSS_COMPILE)$(CC) $(DEBUGFLAGS)\
 		  $(CFLAGS) $(DEPFLAGS) $(COMPILEFLAGS) $(INCLUDEFLAGS)
 
-OP_COMPILE	= $(CROSS_COMPILE)$(CC) \
+OP_COMPILE	:= $(CROSS_COMPILE)$(CC) \
 			-Wall -Wextra -O2 \
-			-fno-schedule-insns -fno-schedule-insns2
+			-fno-schedule-insns -fno-schedule-insns2 \
+			-fpic -fpie \
+			-T lib/link.ld \
+			-ffreestanding \
+			-nostdlib
+
+# load arch specific compilation options
+# as much as I'd like to have everything be completely generic,
+# it seems that some arch specific memory models generate unsuitable code
+# so we have to specify which models we want to use.
+ARCH		!= uname -m
+-include arch/$(ARCH).mk
 
 LINT		= $(COMPILE) $(LINTFLAGS)
 
@@ -66,7 +77,7 @@ copyjit: $(OBJS)
 # could probably make this a bit prettier
 .PHONY: clean
 clean:
-	@$(RM) -r build copyjit lib/gen/* lib/*.o lib/*.bin lib/*.d lib/prune deps.mk
+	@$(RM) -r build copyjit lib/gen/* lib/*.bin lib/*.d lib/empty lib/prune deps.mk
 
 .PHONY: clean_docs
 clean_docs:

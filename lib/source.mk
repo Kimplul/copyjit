@@ -3,11 +3,11 @@ lib/prune: lib/empty.bin
 	$(COMPILE) lib/prune.c -o lib/prune
 
 lib/empty.c: ops/common.h
-lib/empty.bin: lib/empty.o
-	$(OBJCOPY) -j .text -Obinary lib/empty.o lib/empty.bin
+lib/empty.bin: lib/empty
+	$(OBJCOPY) -j .text -Obinary lib/empty lib/empty.bin
 
-lib/empty.o: lib/empty.c
-	$(OP_COMPILE) -c lib/empty.c -o lib/empty.o
+lib/empty: lib/empty.c
+	$(OP_COMPILE) lib/empty.c -o lib/empty
 
 src/copyjit.c: lib/decls.h
 lib/decls.h: $(OPS)
