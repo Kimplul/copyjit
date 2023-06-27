@@ -9,6 +9,8 @@ lib/empty.bin: lib/empty
 lib/empty: lib/empty.c
 	$(OP_COMPILE) lib/empty.c -o lib/empty
 
-src/copyjit.c: lib/decls.h
-lib/decls.h: $(OPS)
-	cd lib && ./gen_lib "$(OPS)"
+lib/op_decls.h: $(OPS)
+	cd lib && ./gen_op "$(OPS)"
+
+lib/imm_decls.h: $(IMMS)
+	cd lib && ./gen_imm "$(IMMS)"

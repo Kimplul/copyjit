@@ -1,0 +1,31 @@
+#!/bin/sh
+
+echo "#ifndef COPYJIT_IMM_H" > imm.h
+echo "#define COPYJIT_IMM_H" >> imm.h
+
+echo "#ifndef COPYJIT_IMM_DECLS_H" > imm_decls.h
+echo "#define COPYJIT_IMM_DECLS_H" >> imm_decls.h
+
+echo "#ifndef COPYJIT_IMM_DEFNS_H" > imm_defns.h
+echo "#define COPYJIT_IMM_DEFNS_H" >> imm_defns.h
+
+for bin in ${1}
+do
+	base=$(basename "${bin}")
+	op=${base%.*}
+	cp "../${bin}" "gen/${op}"
+	xxd -i "gen/${op}" >> imm.h
+	echo "void *compile_${op}(ctx_t *ctx, unsigned long i);" >> imm_decls.h
+	echo "void *compile_${op}(ctx_t *ctx, unsigned long i)\n"		\
+		"{\n"								\
+		"	void *pc = ctx->pc;\n"					\
+		"	memcpy(ctx->pc, gen_${op}, gen_${op}_len);\n"		\
+		"	*(unsigned long *)(ctx->pc + gen_${op}_len - 8) = i;\n"	\
+		"	ctx->pc += gen_${op}_len;\n"				\
+		"	return pc;\n"						\
+		"}" >> imm_defns.h
+done
+
+echo "#endif /* COPYJIT_OPS_H */" >> imm.h
+echo "#endif /* COPYJIT_DECLS_H */" >> imm_decls.h
+echo "#endif /* COPYJIT_DEFNS_H */" >> imm_defns.h

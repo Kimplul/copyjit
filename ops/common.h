@@ -22,7 +22,11 @@ typedef void (*op_call)(reg_t *sp, reg_t a, reg_t x, reg_t y, reg_t o);
 
 #define UNUSED(x) (void)(x);
 
+#define IMM() (*(unsigned long *)(&__imm))
+
 #define __hidden __attribute__((visibility("hidden")))
 __hidden extern void *__next_op;
+
+__hidden extern unsigned long __imm;
 
 #endif /* OPS_COMMON_H */

@@ -5,7 +5,7 @@ genobjs () {
 	bin="build/${s%.*}.bin"
 	echo "${obj}: ops/common.h"			>> deps.mk
 	echo "${obj}: ${s}" 				>> deps.mk
-	echo "	\$(OP_COMPILE) \$< -o \$@"		>> deps.mk
+	echo "	\$($compile) \$< -o \$@"		>> deps.mk
 	echo "${bin}: lib/prune"			>> deps.mk
 	echo "${bin}: ${obj}"				>> deps.mk
 	echo "	\$(OBJCOPY) -j .text -Obinary \$< \$@"	>> deps.mk
@@ -13,9 +13,19 @@ genobjs () {
 	echo "${bin}"
 }
 
-mkdir -p $(echo "${1}" | xargs dirname | uniq | sed 's|^|build/|g')
+case "${1}" in
+	--ops)
+		compile=OP_COMPILE
+		;;
 
-for s in ${1}
+	--imms)
+		compile=IMM_COMPILE
+		;;
+esac
+
+mkdir -p $(echo "${2}" | xargs dirname | uniq | sed 's|^|build/|g')
+
+for s in ${2}
 do
 	genobjs
 done

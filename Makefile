@@ -19,6 +19,7 @@ OBJCOPY		= objcopy
 
 SOURCES		:=
 OP_SOURCES	:=
+IMM_SOURCES	:=
 
 include ops/source.mk
 include src/source.mk
@@ -27,12 +28,19 @@ COMPILE		= $(CROSS_COMPILE)$(CC) $(DEBUGFLAGS)\
 		  $(CFLAGS) $(DEPFLAGS) $(COMPILEFLAGS) $(INCLUDEFLAGS)
 
 OP_COMPILE	:= $(CROSS_COMPILE)$(CC) \
-			-Wall -Wextra -O2 \
-			-fno-schedule-insns -fno-schedule-insns2 \
-			-fpic -fpie \
-			-T lib/link.ld \
-			-ffreestanding \
-			-nostdlib
+		   -Wall -Wextra -O2 \
+		   -fno-schedule-insns -fno-schedule-insns2 \
+		   -fpic -fpie \
+		   -T lib/link.ld \
+		   -ffreestanding \
+		   -nostdlib
+
+IMM_COMPILE	:= $(CROSS_COMPILE)$(CC) \
+		   -Wall -Wextra -O2 \
+		   -fpic -fpie \
+		   -T lib/imm.ld \
+		   -ffreestanding \
+		   -nostdlib
 
 # load arch specific compilation options
 # as much as I'd like to have everything be completely generic,
@@ -44,7 +52,8 @@ ARCH		!= uname -m
 LINT		= $(COMPILE) $(LINTFLAGS)
 
 OBJS		!= ./scripts/gen-deps --sources "$(SOURCES)"
-OPS		!= ./scripts/gen-ops "$(OP_SOURCES)"
+OPS		!= ./scripts/gen-ops --ops "$(OP_SOURCES)"
+IMMS		!= ./scripts/gen-ops --imms "$(IMM_SOURCES)"
 
 include deps.mk
 include lib/source.mk
@@ -68,16 +77,23 @@ docs:
 	@doxygen docs/doxygen.conf
 
 .PHONY: check
-check: ek
+check: copyjit
 	./tests/check.sh
 
 copyjit: $(OBJS)
 	$(COMPILE) $(OBJS) -o $@
 
+# todo: generate operations after cloning? a bit tricky to tell make to generate
+# a bunch of files only when required, maybe have a configure stage?
+
+# todo: set up some qemu cross compile environment and test different
+# architectures
+
 # could probably make this a bit prettier
 .PHONY: clean
 clean:
 	@$(RM) -r build copyjit lib/gen/* lib/*.bin lib/*.d lib/empty lib/prune deps.mk
+	@$(RM) -r lib/*decls.h lib/*defns.h lib/ops.h lib/imm.h
 
 .PHONY: clean_docs
 clean_docs:

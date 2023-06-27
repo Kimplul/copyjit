@@ -3,12 +3,17 @@
 #include <string.h>
 #include <stdint.h>
 #include <stdlib.h>
+#include <assert.h>
 #include <sys/mman.h>
 
 #include "copyjit.h"
 
 #include "../lib/ops.h"
-#include "../lib/defns.h"
+#include "../lib/op_defns.h"
+
+#include "../lib/imm.h"
+#include "../lib/imm_defns.h"
+
 #include "../ops/common.h"
 
 #define SELECT(i, ctx, name) \
@@ -275,18 +280,59 @@ case i: name##i (ctx); break;
 	SELECT(254, ctx, name) \
 	SELECT(255, ctx, name)
 
-static void select_uli(ctx_t *ctx, uint8_t i)
+static void select_lio(ctx_t *ctx, uint8_t i)
 {
-	/* should maybe be uli? */
 	switch (i) {
-		SELECT256(ctx, compile_li);
+		SELECT256(ctx, compile_lio);
 	}
 }
 
-static void select_uaddi(ctx_t *ctx, uint8_t i)
+static void select_lia(ctx_t *ctx, uint8_t i)
 {
 	switch (i) {
-		SELECT256(ctx, compile_addi);
+		SELECT256(ctx, compile_lia);
+	}
+}
+
+static void select_lix(ctx_t *ctx, uint8_t i)
+{
+	switch (i) {
+		SELECT256(ctx, compile_lix);
+	}
+}
+
+static void select_liy(ctx_t *ctx, uint8_t i)
+{
+	switch (i) {
+		SELECT256(ctx, compile_liy);
+	}
+}
+
+static void select_addio(ctx_t *ctx, uint8_t i)
+{
+	switch (i) {
+		SELECT256(ctx, compile_addio);
+	}
+}
+
+static void select_addia(ctx_t *ctx, uint8_t i)
+{
+	switch (i) {
+		SELECT256(ctx, compile_addia);
+	}
+}
+
+static void select_addix(ctx_t *ctx, uint8_t i)
+{
+	switch (i) {
+		SELECT256(ctx, compile_addix);
+	}
+}
+
+static void select_addiy(ctx_t *ctx, uint8_t i)
+{
+	switch (i) {
+		SELECT256(ctx, compile_addiy);
 	}
 }
 
@@ -297,41 +343,119 @@ static void select_slo(ctx_t *ctx, uint8_t i)
 	}
 }
 
-#define NTH_BYTE(i, n) ((i) >> ((n) * 8) & 0xff)
-void *compile_uli(ctx_t *ctx, unsigned long i)
+void *compile_fast_lio(ctx_t *ctx, unsigned long i)
 {
 	void *pc = ctx->pc;
 
+	/* if we can trivially fit the value into a fast block, do it */
 	if (i < 256) {
-		select_uli(ctx, i);
+		select_lio(ctx, i);
 		return pc;
 	}
 
-	/* find first non-zero byte */
-	int nz = sizeof(unsigned long) - 1;
-	for (; nz >= 0; --nz)
-		if (NTH_BYTE(i, nz) != 0)
-			break;
+	/* otherwise use generic option */
+	compile_lio(ctx, i);
+	return pc;
+}
 
-	/* start populating */
-	select_uli(ctx, i >> (nz * 8));
+void *compile_fast_lia(ctx_t *ctx, unsigned long i)
+{
+	void *pc = ctx->pc;
 
-	size_t shifts = 1;
-	for (nz--; nz >= 0; --nz) {
-		if (NTH_BYTE(i, nz) == 0) {
-			shifts++;
-			continue;
-		}
-
-		select_slo(ctx, shifts * 8);
-		select_uaddi(ctx, NTH_BYTE(i, nz));
-		shifts = 1;
+	/* if we can trivially fit the value into a fast block, do it */
+	if (i < 256) {
+		select_lia(ctx, i);
+		return pc;
 	}
 
-	/* last octet is zero, meaning it fell through the for loop */
-	if (shifts != 1)
-		select_slo(ctx, (shifts - 1) * 8);
+	/* otherwise use generic option */
+	compile_lia(ctx, i);
+	return pc;
+}
 
+void *compile_fast_lix(ctx_t *ctx, unsigned long i)
+{
+	void *pc = ctx->pc;
+
+	/* if we can trivially fit the value into a fast block, do it */
+	if (i < 256) {
+		select_lix(ctx, i);
+		return pc;
+	}
+
+	/* otherwise use generic option */
+	compile_lix(ctx, i);
+	return pc;
+}
+
+void *compile_fast_liy(ctx_t *ctx, unsigned long i)
+{
+	void *pc = ctx->pc;
+
+	/* if we can trivially fit the value into a fast block, do it */
+	if (i < 256) {
+		select_liy(ctx, i);
+		return pc;
+	}
+
+	/* otherwise use generic option */
+	compile_liy(ctx, i);
+	return pc;
+}
+
+void *compile_fast_addio(ctx_t *ctx, unsigned long i)
+{
+	void *pc = ctx->pc;
+	if (i < 256) {
+		select_addio(ctx, i);
+		return pc;
+	}
+
+	compile_addio(ctx, i);
+	return pc;
+}
+
+void *compile_fast_addia(ctx_t *ctx, unsigned long i)
+{
+	void *pc = ctx->pc;
+	if (i < 256) {
+		select_addia(ctx, i);
+		return pc;
+	}
+
+	compile_addia(ctx, i);
+	return pc;
+}
+
+void *compile_fast_addix(ctx_t *ctx, unsigned long i)
+{
+	void *pc = ctx->pc;
+	if (i < 256) {
+		select_addix(ctx, i);
+		return pc;
+	}
+
+	compile_addix(ctx, i);
+	return pc;
+}
+
+void *compile_fast_addiy(ctx_t *ctx, unsigned long i)
+{
+	void *pc = ctx->pc;
+	if (i < 256) {
+		select_addiy(ctx, i);
+		return pc;
+	}
+
+	compile_addiy(ctx, i);
+	return pc;
+}
+
+void *compile_slo(ctx_t *ctx, unsigned long i)
+{
+	assert(i < 64);
+	void *pc = ctx->pc;
+	select_slo(ctx, i);
 	return pc;
 }
 
