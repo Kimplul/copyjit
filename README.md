@@ -159,8 +159,10 @@ that would probably be easier to parse. Additionally, I haven't yet put that
 much time into figuring out why each arch fails, but I added some of my thoughts
 as to what the issue seems to be. 
 
-GCC toolchain, tested with Debian's prebuilt GCC packages:
 Linux:
+
+GCC toolchain:
+
 OK:
 + `x86_64`
 + `i686`
