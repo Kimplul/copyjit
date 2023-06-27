@@ -124,6 +124,9 @@ This, however, isn't implemented at the moment. Also, not all operations should
 reserve data as extra jumps are most likely pretty costly, and data should be
 reserved to instructions that load immediate values and the like.
 
+EDIT: At least partially implemented. Could still be improved by trying to figure
+out when an immediate load is faster than trying to construct a value in register.
+
 I suspect it would be reasonably easy to use two linker scripts, one for operations
 that shouldn't take immedates and one for operations that should, with the difference
 just being that one directly falls through and another jumps over some data appended to
