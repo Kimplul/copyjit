@@ -1,0 +1,4 @@
++ Add in placeholders for immediate values
++ Remove GCC flags unknown to LLVM and vice versa
++ Fix warnings on 32bit systems
++ Figure out compiler flags/tweaks currently broken architectures would require

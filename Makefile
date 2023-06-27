@@ -1,6 +1,11 @@
 DO	!= echo -n > deps.mk
 
-DEBUGFLAGS	!= [ $(RELEASE) ] && echo "-flto=auto -O2 -DNODEBUG" || echo "-O0 -g -DDEBUG"
+LLVM		?= 0
+RELEASE		?= 0
+DEBUGFLAGS	!= [ "$(RELEASE)" != "0" ] \
+			&& echo "-flto=auto -O2 -DNODEBUG" \
+			|| echo "-O0 -g -DDEBUG"
+
 CFLAGS		= -Wall -Wextra
 DEPFLAGS	= -MT $@ -MMD -MP -MF $@.d
 LINTFLAGS	= -fsyntax-only
@@ -14,8 +19,15 @@ all: copyjit
 CROSS_COMPILE	?=
 
 # common programs
-CC		= gcc
-OBJCOPY		= objcopy
+OBJCOPY		!= [ "$(LLVM)" != "0" ] \
+			&& echo llvm-objcopy \
+			|| echo $(CROSS_COMPILE)objcopy
+
+# weird, I thought clang accepted the same system target triplet as gcc?
+# apparently it should be passed without a trailing dash, will have to fix
+COMPILER	!= [ "$(LLVM)" != "0" ] \
+			&& echo clang --target="$(CROSS_COMPILE)" \
+			|| echo $(CROSS_COMPILE)gcc
 
 SOURCES		:=
 OP_SOURCES	:=
@@ -24,10 +36,15 @@ IMM_SOURCES	:=
 include ops/source.mk
 include src/source.mk
 
-COMPILE		= $(CROSS_COMPILE)$(CC) $(DEBUGFLAGS)\
+# compile tools with these flags
+# at the moment just prune.c, wonder if it should be rewritten in some
+# scripting language?
+HOST_COMPILE	= $(CC) $(DEBUGFLAGS) $(CFLAGS)
+
+COMPILE		= $(COMPILER) $(DEBUGFLAGS)\
 		  $(CFLAGS) $(DEPFLAGS) $(COMPILEFLAGS) $(INCLUDEFLAGS)
 
-OP_COMPILE	:= $(CROSS_COMPILE)$(CC) \
+OP_COMPILE	:= $(COMPILER) \
 		   -Wall -Wextra -O2 \
 		   -fno-schedule-insns -fno-schedule-insns2 \
 		   -fpic -fpie \
@@ -35,7 +52,7 @@ OP_COMPILE	:= $(CROSS_COMPILE)$(CC) \
 		   -ffreestanding \
 		   -nostdlib
 
-IMM_COMPILE	:= $(CROSS_COMPILE)$(CC) \
+IMM_COMPILE	:= $(COMPILER) \
 		   -Wall -Wextra -O2 \
 		   -fpic -fpie \
 		   -T lib/imm.ld \

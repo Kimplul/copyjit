@@ -1,6 +1,6 @@
 # some glue to keep everything together
 lib/prune: lib/empty.bin
-	$(COMPILE) lib/prune.c -o lib/prune
+	$(HOST_COMPILE) lib/prune.c -o lib/prune
 
 lib/empty.c: ops/common.h
 lib/empty.bin: lib/empty

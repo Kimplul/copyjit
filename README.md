@@ -128,3 +128,73 @@ I suspect it would be reasonably easy to use two linker scripts, one for operati
 that shouldn't take immedates and one for operations that should, with the difference
 just being that one directly falls through and another jumps over some data appended to
 it at runime.
+
+## Arch status
+
+All GCC test cases were cross-compiled with Debian's prebuilt compiler packages
+(`gcc-aarch64-linux-gnu` etc.) and run with qemu usermode emulation with
+Debian's prebuilt `qemu-user` package. Similarly, LLVM test cases were compiled
+with the same architecture string as the GCC tests.
+
+For instance, a GCC test case:
+```
+make CROSS_COMPILE=riscv64-linux-gnu- ARCH=riscv64 -j$(nproc)
+qemu-riscv64 -L /usr/riscv64-linux-gnu ./copyjit
+```
+
+And an LLVM test case:
+```
+make CROSS_COMPILE=riscv64-linux-gnu- ARCH=riscv64 -j$(nproc)
+qemu-riscv64 -L /usr/riscv64-linux-gnu ./copyjit
+```
+
+Some of the 'broken' architectures may end up working with some compiler flag
+tweaks, similar to aarch64.
+
+The test setup is far from optimal and ideally I would set up some automatic CI
+that would probably be easier to parse. Additionally, I haven't yet put that
+much time into figuring out why each arch fails, but I added some of my thoughts
+as to what the issue seems to be. 
+
+GCC toolchain, tested with Debian's prebuilt GCC packages:
+Linux:
+OK:
++ `x86_64`
++ `i686`
++ `riscv64`
++ `aarch64`
++ `arm`
+
+Broken:
++ `mips64el` (possibly due to bug in instruction cache flushing? otherwise unsure)
++ `mips64`
++ `mipsel`
++ `mips`
++ `sparc64` (fails to generate continuation passing)
++ `sh4` (fails to generate continuation passing (I think?))
++ `s390x` (doesn't crash, but seems to jump over some code or something?)
++ `m68k` (segfault, unclear why)
++ `powerpc64le` (fails to generate continuation passing)
++ `powerpc64`
++ `powerpc`
+
+Fails to compile:
++ `hppa64` (missing string.h?)
++ `hppa` ('undefined reference to `$$dyncall`)
++ `alpha` (`'internal compiler error: in extract_insn, at recog.cc:2791'`)
+
+Untestable (by me at least):
++ `arc` (compiles but doesn't have a qemu user emulator)
+
+LLVM toolchain:
+
+OK:
++ `x86_64`
++ `aarch64`
++ `riscv64`
+
+Broken:
++ `i686` (fails to generate continuation passing)
++ `arm` (unsure, possibly some branch issue)
+
+TODO: continue testing LLVM
