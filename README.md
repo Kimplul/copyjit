@@ -179,7 +179,7 @@ Broken:
 + `sh4` (fails to generate continuation passing (I think?))
 + `s390x` (doesn't crash, but seems to jump over some code or something?)
 + `m68k` (segfault, unclear why)
-+ `powerpc64le` (fails to generate continuation passing)
++ `powerpc64le` (fails to generate continuation passing) (does work with power10, though)
 + `powerpc64`
 + `powerpc`
 
