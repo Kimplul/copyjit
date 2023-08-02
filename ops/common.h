@@ -17,9 +17,9 @@ typedef reg_t (*op_call)(reg_t *sp, reg_t a, reg_t x, reg_t y, reg_t o);
 #define JUMP(target, sp, a, x, y, o) \
 	return CALL(target, sp, a, x, y, o);
 
-#define BRANCH(target, cond, sp, a, x, y, o)                        \
+#define BRANCH(target, cond, sp, a, x, y, o)                               \
 	return ((op_call)((cond) ? (void *)(target) : (void *)&__next_op)) \
-	((sp), (a), (x), (y), (o));                                 \
+	       ((sp), (a), (x), (y), (o));                                 \
 
 #define DEFINE_OP(name) reg_t _op(reg_t *sp, reg_t a, reg_t x, reg_t y, reg_t o)
 

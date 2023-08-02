@@ -68,6 +68,7 @@ ARCH		!= uname -m
 
 LINT		= $(COMPILE) $(LINTFLAGS)
 
+TEST_OBJS	!= ./scripts/gen-deps --sources tests/check.c
 OBJS		!= ./scripts/gen-deps --sources "$(SOURCES)"
 OPS		!= ./scripts/gen-ops --ops "$(OP_SOURCES)"
 IMMS		!= ./scripts/gen-ops --imms "$(IMM_SOURCES)"
@@ -94,8 +95,11 @@ docs:
 	@doxygen docs/doxygen.conf
 
 .PHONY: check
-check: copyjit
-	./tests/check.sh
+check: tests/check
+	./tests/check
+
+tests/check: $(OBJS) $(TEST_OBJS)
+	$(COMPILE) build/tests/check.o build/src/copyjit.o -o tests/check
 
 copyjit: $(OBJS)
 	$(COMPILE) $(OBJS) -o $@
@@ -111,6 +115,7 @@ copyjit: $(OBJS)
 clean:
 	@$(RM) -r build copyjit lib/gen/* lib/*.bin lib/*.d lib/empty lib/prune deps.mk
 	@$(RM) -r lib/*decls.h lib/*defns.h lib/ops.h lib/imm.h
+	@$(RM) tests/check
 
 .PHONY: clean_docs
 clean_docs:
