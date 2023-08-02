@@ -1,6 +1,7 @@
 /* SPDX-License-Identifier: copyleft-next-0.3.1 */
 
 #include <stdint.h>
+#include <stdio.h>
 #include <stddef.h>
 
 #include "copyjit.h"
@@ -10,12 +11,12 @@ int main()
 	ctx_t ctx;
 	compile_start(&ctx);
 
-	compile_fast_lia(&ctx, 0); // total in a
+	compile_fast_lix(&ctx, 0); // total in x
 
-	compile_fast_liy(&ctx, 0);
+	compile_fast_liy(&ctx, 0); // iter in y
 
-	void *top = compile_movxa(&ctx); // iter + total in a
-	compile_add(&ctx);
+	void *top = compile_add(&ctx); // iter + total in a
+	compile_movxa(&ctx); // move total to x
 
 	compile_incy(&ctx); // increment iter
 	compile_fast_lio(&ctx, 1000000000); // limit in o
@@ -30,5 +31,5 @@ int main()
 
 	compile_finish(&ctx);
 
-	run(&ctx);
+	printf("%lu\n", run(&ctx));
 }

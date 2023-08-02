@@ -476,9 +476,10 @@ void compile_finish(ctx_t *ctx)
 	__builtin___clear_cache(ctx->buf, ctx->buf + ctx->size);
 }
 
-void run(ctx_t *ctx)
+unsigned long run(ctx_t *ctx)
 {
 	void *sp = malloc(4096);
-	JUMP(ctx->buf, sp, 0, 0, 0, 0);
+	unsigned long a = CALL(ctx->buf, sp, 0, 0, 0, 0);
 	free(sp);
+	return a;
 }

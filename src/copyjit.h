@@ -32,6 +32,6 @@ void *compile_sly(ctx_t *ctx, unsigned long i);
 
 void compile_start(ctx_t *ctx);
 void compile_finish(ctx_t *ctx);
-void run(ctx_t *ctx);
+unsigned long run(ctx_t *ctx);
 
 #endif /* HMMJIT_H */

@@ -6,8 +6,7 @@ DEFINE_OP(end)
 {
 	UNUSED(sp);
 	UNUSED(a);
-	UNUSED(x);
 	UNUSED(y);
 	UNUSED(o);
-	return;
+	return x;
 }
