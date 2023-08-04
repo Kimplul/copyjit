@@ -44,6 +44,8 @@ void compile_patch(reloc_t reloc, void *addr);
 
 void compile_start(ctx_t *ctx);
 void compile_finish(ctx_t *ctx);
+void compile_destroy(ctx_t *ctx);
+
 unsigned long run(ctx_t *ctx);
 
 #endif /* HMMJIT_H */

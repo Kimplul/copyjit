@@ -120,9 +120,9 @@ libcopyjit.a: $(OBJS)
 # could probably make this a bit prettier
 .PHONY: clean
 clean:
-	@$(RM) -r build copyjit lib/gen/* lib/*.bin lib/*.d lib/empty lib/prune deps.mk
+	@$(RM) -r build lib/gen/* lib/*.bin lib/*.d lib/empty lib/prune deps.mk
 	@$(RM) -r lib/*decls.h lib/*defns.h lib/ops.h lib/imm.h
-	@$(RM) tests/check
+	@$(RM) tests/check examples/copyjit libcopyjit.a
 
 .PHONY: clean_docs
 clean_docs:

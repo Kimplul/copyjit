@@ -32,4 +32,5 @@ int main()
 	compile_finish(&ctx);
 
 	printf("%lu\n", run(&ctx));
+	compile_destroy(&ctx);
 }

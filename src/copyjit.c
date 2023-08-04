@@ -471,6 +471,11 @@ void compile_start(ctx_t *ctx)
 	ctx->pc = ctx->buf;
 }
 
+void compile_destroy(ctx_t *ctx)
+{
+	munmap(ctx->buf, ctx->size);
+}
+
 reloc_t compile_placeholder(ctx_t *ctx, compile_callback_t call)
 {
 	reloc_t r = {0};

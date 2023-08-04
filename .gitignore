@@ -13,5 +13,6 @@ build
 copyjit
 libcopyjit.a
 examples/copyjit
+tests/check
 !include/copyjit
 !lib/gen/.gitkeep

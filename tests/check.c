@@ -16,6 +16,7 @@ static void check_li()
 		compile_finish(&ctx);
 
 		assert(run(&ctx) == i);
+		compile_destroy(&ctx);
 	}
 
 	// y
@@ -34,6 +35,7 @@ static void check_li()
 		compile_finish(&ctx);
 
 		assert(run(&ctx) == i);
+		compile_destroy(&ctx);
 	}
 
 	// o
@@ -50,6 +52,7 @@ static void check_li()
 		compile_finish(&ctx);
 
 		assert(run(&ctx) == i);
+		compile_destroy(&ctx);
 	}
 
 	// a
@@ -66,6 +69,7 @@ static void check_li()
 		compile_finish(&ctx);
 
 		assert(run(&ctx) == i);
+		compile_destroy(&ctx);
 	}
 }
 
@@ -83,6 +87,7 @@ static void check_add()
 		compile_finish(&ctx);
 
 		assert(run(&ctx) == i);
+		compile_destroy(&ctx);
 	}
 
 	// y
@@ -101,6 +106,7 @@ static void check_add()
 		compile_finish(&ctx);
 
 		assert(run(&ctx) == i);
+		compile_destroy(&ctx);
 	}
 
 	// o
@@ -117,6 +123,7 @@ static void check_add()
 		compile_finish(&ctx);
 
 		assert(run(&ctx) == i);
+		compile_destroy(&ctx);
 	}
 
 	// a
@@ -133,6 +140,7 @@ static void check_add()
 		compile_finish(&ctx);
 
 		assert(run(&ctx) == i);
+		compile_destroy(&ctx);
 	}
 }
 
@@ -156,6 +164,7 @@ static void check_branch()
 		compile_finish(&ctx);
 
 		assert(run(&ctx) == (i != 0));
+		compile_destroy(&ctx);
 	}
 
 	for (size_t i = 0; i < 2; ++i) {
@@ -176,6 +185,7 @@ static void check_branch()
 		compile_finish(&ctx);
 
 		assert(run(&ctx) == (i == 0));
+		compile_destroy(&ctx);
 	}
 }
 
