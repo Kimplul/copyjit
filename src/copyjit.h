@@ -3,11 +3,20 @@
 #ifndef HMMJIT_H
 #define HMMJIT_H
 
+#include <stdint.h>
+
 typedef struct {
 	char *pc;
 	char *buf;
 	size_t size;
 } ctx_t;
+
+typedef struct {
+	void *addr;
+	uintptr_t *imm;
+} reloc_t;
+
+typedef void *(*compile_callback_t)(ctx_t *, unsigned long);
 
 #include "../lib/op_decls.h"
 #include "../lib/imm_decls.h"
@@ -29,6 +38,9 @@ void *compile_sly(ctx_t *ctx, unsigned long i);
 
 /** @todo add in placeholders (for example for load immediate but we don't know
  * what the immediate is yet) */
+
+reloc_t compile_placeholder(ctx_t *ctx, compile_callback_t call);
+void compile_patch(reloc_t reloc, void *addr);
 
 void compile_start(ctx_t *ctx);
 void compile_finish(ctx_t *ctx);

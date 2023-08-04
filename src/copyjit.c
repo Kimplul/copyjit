@@ -471,6 +471,23 @@ void compile_start(ctx_t *ctx)
 	ctx->pc = ctx->buf;
 }
 
+reloc_t compile_placeholder(ctx_t *ctx, compile_callback_t call)
+{
+	reloc_t r = {0};
+	r.addr = call(ctx, 0);
+
+	/* the immediate is the last sizeof(uintptr_t) bytes of the generated
+	 * instruction
+	 * (at least we assume, the user could've passed anything to our callback) */
+	r.imm = ((uintptr_t *)ctx->pc) - 1;
+	return r;
+}
+
+void compile_patch(reloc_t reloc, void *addr)
+{
+	*reloc.imm = (uintptr_t)addr;
+}
+
 void compile_finish(ctx_t *ctx)
 {
 	__builtin___clear_cache(ctx->buf, ctx->buf + ctx->size);

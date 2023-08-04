@@ -138,8 +138,45 @@ static void check_add()
 
 static void check_branch()
 {
-	/* oh yeah, I don't support forward references (yet), so this is a bit
-	 * tricky */
+	for (size_t i = 0; i < 2; ++i) {
+		ctx_t ctx;
+		compile_start(&ctx);
+
+		compile_fast_lia(&ctx, i);
+		reloc_t r = compile_placeholder(&ctx, compile_lio);
+		compile_ban(&ctx);
+
+		compile_lix(&ctx, 0);
+		compile_end(&ctx);
+
+		void *skip = compile_lix(&ctx, 1);
+		compile_end(&ctx);
+		compile_patch(r, skip);
+
+		compile_finish(&ctx);
+
+		assert(run(&ctx) == (i != 0));
+	}
+
+	for (size_t i = 0; i < 2; ++i) {
+		ctx_t ctx;
+		compile_start(&ctx);
+
+		compile_fast_lia(&ctx, i);
+		reloc_t r = compile_placeholder(&ctx, compile_lio);
+		compile_baz(&ctx);
+
+		compile_lix(&ctx, 0);
+		compile_end(&ctx);
+
+		void *skip = compile_lix(&ctx, 1);
+		compile_end(&ctx);
+		compile_patch(r, skip);
+
+		compile_finish(&ctx);
+
+		assert(run(&ctx) == (i == 0));
+	}
 }
 
 int main()
