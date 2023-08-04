@@ -11,5 +11,7 @@ lib/*.d
 tests/*.d
 build
 copyjit
+libcopyjit.a
+examples/copyjit
 !include/copyjit
 !lib/gen/.gitkeep

@@ -4,7 +4,7 @@
 #include <stdio.h>
 #include <stddef.h>
 
-#include "copyjit.h"
+#include "../src/copyjit.h"
 
 int main()
 {

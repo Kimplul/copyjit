@@ -13,7 +13,7 @@ INCLUDEFLAGS	= -Iinclude
 COMPILEFLAGS	=
 LINKFLAGS	=
 
-all: copyjit
+all: libcopyjit.a
 
 # default values
 CROSS_COMPILE	?=
@@ -68,6 +68,7 @@ ARCH		!= uname -m
 
 LINT		= $(COMPILE) $(LINTFLAGS)
 
+EXAMPLE_OBJS	!= ./scripts/gen-deps --sources examples/main.c
 TEST_OBJS	!= ./scripts/gen-deps --sources tests/check.c
 OBJS		!= ./scripts/gen-deps --sources "$(SOURCES)"
 OPS		!= ./scripts/gen-ops --ops "$(OP_SOURCES)"
@@ -98,11 +99,17 @@ docs:
 check: tests/check
 	./tests/check
 
-tests/check: $(OBJS) $(TEST_OBJS)
-	$(COMPILE) build/tests/check.o build/src/copyjit.o -o tests/check
+.PHONY: examples
+examples: examples/copyjit
 
-copyjit: $(OBJS)
-	$(COMPILE) $(OBJS) -o $@
+examples/copyjit: libcopyjit.a $(EXAMPLE_OBJS)
+	$(COMPILE) $(EXAMPLE_OBJS) -o $@ -L. -lcopyjit
+
+tests/check: libcopyjit.a $(TEST_OBJS)
+	$(COMPILE) $(TEST_OBJS) -o $@ -L. -lcopyjit
+
+libcopyjit.a: $(OBJS)
+	$(AR) rcs $@ $(OBJS)
 
 # todo: generate operations after cloning? a bit tricky to tell make to generate
 # a bunch of files only when required, maybe have a configure stage?
