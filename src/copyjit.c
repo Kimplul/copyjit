@@ -498,10 +498,12 @@ void compile_finish(ctx_t *ctx)
 	__builtin___clear_cache(ctx->buf, ctx->buf + ctx->size);
 }
 
-unsigned long run(ctx_t *ctx)
+unsigned long run(ctx_t *ctx,
+                  unsigned long a, unsigned long x, unsigned long y,
+                  unsigned long o)
 {
 	void *sp = malloc(4096);
-	unsigned long a = CALL(ctx->buf, sp, 0, 0, 0, 0);
+	unsigned long r = CALL(ctx->buf, sp, a, x, y, o);
 	free(sp);
-	return a;
+	return r;
 }

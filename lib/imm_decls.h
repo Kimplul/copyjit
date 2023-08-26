@@ -8,4 +8,5 @@ void *compile_lia(ctx_t *ctx, unsigned long i);
 void *compile_lio(ctx_t *ctx, unsigned long i);
 void *compile_lix(ctx_t *ctx, unsigned long i);
 void *compile_liy(ctx_t *ctx, unsigned long i);
+void *compile_bani(ctx_t *ctx, unsigned long i);
 #endif /* COPYJIT_DECLS_H */

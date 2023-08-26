@@ -1,3 +1,5 @@
+/* SPDX-License-Identifier: copyleft-next-0.3.1 */
+
 #include <assert.h>
 #include <stddef.h>
 
@@ -15,7 +17,7 @@ static void check_li()
 		compile_end(&ctx);
 		compile_finish(&ctx);
 
-		assert(run(&ctx) == i);
+		assert(run(&ctx, 0, 0, 0, 0) == i);
 		compile_destroy(&ctx);
 	}
 
@@ -34,7 +36,7 @@ static void check_li()
 		compile_end(&ctx);
 		compile_finish(&ctx);
 
-		assert(run(&ctx) == i);
+		assert(run(&ctx, 0, 0, 0, 0) == i);
 		compile_destroy(&ctx);
 	}
 
@@ -51,7 +53,7 @@ static void check_li()
 		compile_end(&ctx);
 		compile_finish(&ctx);
 
-		assert(run(&ctx) == i);
+		assert(run(&ctx, 0, 0, 0, 0) == i);
 		compile_destroy(&ctx);
 	}
 
@@ -68,7 +70,7 @@ static void check_li()
 		compile_end(&ctx);
 		compile_finish(&ctx);
 
-		assert(run(&ctx) == i);
+		assert(run(&ctx, 0, 0, 0, 0) == i);
 		compile_destroy(&ctx);
 	}
 }
@@ -86,7 +88,7 @@ static void check_add()
 		compile_end(&ctx);
 		compile_finish(&ctx);
 
-		assert(run(&ctx) == i);
+		assert(run(&ctx, 0, 0, 0, 0) == i);
 		compile_destroy(&ctx);
 	}
 
@@ -105,7 +107,7 @@ static void check_add()
 		compile_end(&ctx);
 		compile_finish(&ctx);
 
-		assert(run(&ctx) == i);
+		assert(run(&ctx, 0, 0, 0, 0) == i);
 		compile_destroy(&ctx);
 	}
 
@@ -122,7 +124,7 @@ static void check_add()
 		compile_end(&ctx);
 		compile_finish(&ctx);
 
-		assert(run(&ctx) == i);
+		assert(run(&ctx, 0, 0, 0, 0) == i);
 		compile_destroy(&ctx);
 	}
 
@@ -139,7 +141,7 @@ static void check_add()
 		compile_end(&ctx);
 		compile_finish(&ctx);
 
-		assert(run(&ctx) == i);
+		assert(run(&ctx, 0, 0, 0, 0) == i);
 		compile_destroy(&ctx);
 	}
 }
@@ -163,7 +165,7 @@ static void check_branch()
 
 		compile_finish(&ctx);
 
-		assert(run(&ctx) == (i != 0));
+		assert(run(&ctx, 0, 0, 0, 0) == (i != 0));
 		compile_destroy(&ctx);
 	}
 
@@ -184,7 +186,7 @@ static void check_branch()
 
 		compile_finish(&ctx);
 
-		assert(run(&ctx) == (i == 0));
+		assert(run(&ctx, 0, 0, 0, 0) == (i == 0));
 		compile_destroy(&ctx);
 	}
 }

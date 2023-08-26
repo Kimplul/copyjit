@@ -64,4 +64,12 @@ void *compile_liy(ctx_t *ctx, unsigned long i)
  	ctx->pc += gen_liy_len;
  	return pc;
  }
+void *compile_bani(ctx_t *ctx, unsigned long i)
+ {
+ 	void *pc = ctx->pc;
+ 	memcpy(ctx->pc, gen_bani, gen_bani_len);
+ 	*(unsigned long *)(ctx->pc + gen_bani_len - 8) = i;
+ 	ctx->pc += gen_bani_len;
+ 	return pc;
+ }
 #endif /* COPYJIT_DEFNS_H */

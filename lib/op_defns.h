@@ -98,6 +98,27 @@ void *compile_movyo(ctx_t *ctx)
  	ctx->pc += gen_movyo_len;
  	return pc;
  }
+void *compile_peeko(ctx_t *ctx)
+ {
+ 	void *pc = ctx->pc;
+ 	memcpy(pc, gen_peeko, gen_peeko_len);
+ 	ctx->pc += gen_peeko_len;
+ 	return pc;
+ }
+void *compile_popo(ctx_t *ctx)
+ {
+ 	void *pc = ctx->pc;
+ 	memcpy(pc, gen_popo, gen_popo_len);
+ 	ctx->pc += gen_popo_len;
+ 	return pc;
+ }
+void *compile_pusha(ctx_t *ctx)
+ {
+ 	void *pc = ctx->pc;
+ 	memcpy(pc, gen_pusha, gen_pusha_len);
+ 	ctx->pc += gen_pusha_len;
+ 	return pc;
+ }
 void *compile_sub(ctx_t *ctx)
  {
  	void *pc = ctx->pc;

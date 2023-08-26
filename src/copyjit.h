@@ -46,6 +46,8 @@ void compile_start(ctx_t *ctx);
 void compile_finish(ctx_t *ctx);
 void compile_destroy(ctx_t *ctx);
 
-unsigned long run(ctx_t *ctx);
+unsigned long run(ctx_t *ctx,
+                  unsigned long a, unsigned long x, unsigned long y,
+                  unsigned long o);
 
 #endif /* HMMJIT_H */

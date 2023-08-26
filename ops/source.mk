@@ -6,3 +6,4 @@ include ops/bs/source.mk
 include ops/li/source.mk
 include ops/sl/source.mk
 include ops/sr/source.mk
+include ops/branchi/source.mk
