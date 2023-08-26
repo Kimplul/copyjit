@@ -141,14 +141,14 @@ with the same architecture string as the GCC tests.
 
 For instance, a GCC test case:
 ```
-make CROSS_COMPILE=riscv64-linux-gnu- ARCH=riscv64 -j$(nproc)
-qemu-riscv64 -L /usr/riscv64-linux-gnu ./copyjit
+make CROSS_COMPILE=riscv64-linux-gnu- ARCH=riscv64 -j$(nproc) examples
+qemu-riscv64 -L /usr/riscv64-linux-gnu ./examples/copyjit
 ```
 
 And an LLVM test case:
 ```
-make CROSS_COMPILE=riscv64-linux-gnu- ARCH=riscv64 -j$(nproc)
-qemu-riscv64 -L /usr/riscv64-linux-gnu ./copyjit
+make CROSS_COMPILE=riscv64-linux-gnu- ARCH=riscv64 -j$(nproc) examples
+qemu-riscv64 -L /usr/riscv64-linux-gnu ./examples/copyjit
 ```
 
 Some of the 'broken' architectures may end up working with some compiler flag
@@ -171,7 +171,7 @@ OK:
 + `arm`
 
 Broken:
-+ `mips64el` (possibly due to bug in instruction cache flushing? otherwise unsure)
++ `mips64el` (issues with ABI, global pointer?)
 + `mips64`
 + `mipsel`
 + `mips`
