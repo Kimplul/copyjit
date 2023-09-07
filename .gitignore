@@ -7,6 +7,8 @@ lib/prune
 lib/decls.h
 lib/defns.h
 lib/ops.h
+lib/op_defns.h
+lib/op_decls.h
 lib/imm_decls.h
 lib/imm_defns.h
 lib/imm.h
